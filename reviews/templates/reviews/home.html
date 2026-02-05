@@ -1,0 +1,67 @@
+{% extends 'reviews/base.html' %}
+
+{% block title %}Список книг{% endblock %}
+
+{% block content %}
+    <div style="margin-bottom: 30px;">
+        <h1>Поиск книг</h1>
+        <form method="GET" action="{% url 'reviews:home' %}" style="display: flex; gap: 10px;">
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ search_query|default:'' }}" 
+                placeholder="Название книги или автор..." 
+                style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+            >
+            <button 
+                type="submit" 
+                style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;"
+            >
+                Найти
+            </button>
+            {% if search_query %}
+                <a 
+                    href="{% url 'reviews:home' %}" 
+                    style="padding: 10px 15px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px;"
+                >
+                    Сбросить
+                </a>
+            {% endif %}
+        </form>
+    </div>
+    
+    <h2>Список книг ({{ books.count }})</h2>
+    
+    {% if books %}
+        <ul style="list-style: none; padding: 0;">
+        {% for book in books %}
+            <li style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px;">
+                <a href="{% url 'reviews:book_detail' book.id %}" style="font-size: 1.2em; text-decoration: none;">
+                    <strong>{{ book.title }}</strong>
+                </a> 
+                <p style="margin: 5px 0; color: #555;">
+                    <strong>Автор:</strong> {{ book.author }}
+                </p>
+                {% if book.description %}
+                    <p style="color: #666;">
+                        {{ book.description|truncatechars:150 }}
+                    </p>
+                {% endif %}
+                <small style="color: #888;">
+                    Отзывов: {{ book.reviews.count }}
+                </small>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center;">
+            {% if search_query %}
+                <p>По запросу "{{ search_query }}" ничего не найдено.</p>
+                <p><a href="{% url 'reviews:home' %}">Показать все книги</a></p>
+            {% else %}
+                <p>Пока нет книг в базе.</p>
+                <p><a href="/admin/">Добавьте первую через админку!</a></p>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

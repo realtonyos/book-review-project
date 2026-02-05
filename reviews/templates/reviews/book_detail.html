@@ -1,0 +1,140 @@
+{% extends 'reviews/base.html' %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+    <div style="margin-bottom: 30px;">
+        <h1>{{ book.title }}</h1>
+        <p><strong>Автор:</strong> {{ book.author }}</p>
+        
+        {% if book.description %}
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                <strong>Описание:</strong>
+                <p style="margin: 10px 0 0 0;">{{ book.description|linebreaks }}</p>
+            </div>
+        {% endif %}
+        
+        <p>
+            <a href="{% url 'reviews:home' %}" style="text-decoration: none; color: #007bff;">
+                ← Назад к списку книг
+            </a>
+        </p>
+    </div>
+    
+    <hr>
+    
+    <h2>Отзывы ({{ reviews.count }})</h2>
+    
+    {% if reviews %}
+        {% for review in reviews %}
+            <div style="border: 1px solid #ddd; padding: 15px; margin: 15px 0; border-radius: 5px; background: #fff;">
+                <p style="margin: 0 0 10px 0;">
+                    <strong>{{ review.author.username }}</strong> 
+                    <span style="background: #ffc107; color: #333; padding: 2px 8px; border-radius: 12px; font-size: 0.9em;">
+                        ★ {{ review.rating }}/5
+                    </span>
+                    <small style="color: #666; float: right;">
+                        {{ review.created_at|date:"d.m.Y H:i" }}
+                    </small>
+                </p>
+                <p style="margin: 0; color: #333;">{{ review.text|linebreaks }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: center;">
+            <p style="margin: 0;">Пока нет отзывов. Будьте первым!</p>
+        </div>
+    {% endif %}
+    <hr>
+
+        {# После блока с отзывами, перед формой добавления #}
+{% if reviews.has_other_pages %}
+    <div style="margin: 20px 0; text-align: center;">
+        <nav>
+            <ul style="display: inline-block; padding: 0; margin: 0;">
+                {% if reviews.has_previous %}
+                    <li style="display: inline; margin: 0 5px;">
+                        <a href="?page={{ reviews.previous_page_number }}" style="text-decoration: none; padding: 5px 10px; border: 1px solid #ddd;">
+                            ← Назад
+                        </a>
+                    </li>
+                {% endif %}
+                
+                {% for num in reviews.paginator.page_range %}
+                    {% if reviews.number == num %}
+                        <li style="display: inline; margin: 0 5px;">
+                            <span style="padding: 5px 10px; border: 1px solid #007bff; background: #007bff; color: white;">
+                                {{ num }}
+                            </span>
+                        </li>
+                    {% else %}
+                        <li style="display: inline; margin: 0 5px;">
+                            <a href="?page={{ num }}" style="text-decoration: none; padding: 5px 10px; border: 1px solid #ddd;">
+                                {{ num }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if reviews.has_next %}
+                    <li style="display: inline; margin: 0 5px;">
+                        <a href="?page={{ reviews.next_page_number }}" style="text-decoration: none; padding: 5px 10px; border: 1px solid #ddd;">
+                            Вперед →
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <p style="color: #666; font-size: 0.9em; margin-top: 10px;">
+            Страница {{ reviews.number }} из {{ reviews.paginator.num_pages }}
+        </p>
+    </div>
+{% endif %}
+
+    <hr>
+    
+    {% if user.is_authenticated %}
+        <div style="border: 1px solid #007bff; padding: 20px; border-radius: 5px; margin-top: 30px;">
+            <h3 style="margin-top: 0;">Добавить отзыв</h3>
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">
+                        Текст отзыва:
+                    </label>
+                    {{ form.text }}
+                    {% if form.text.errors %}
+                        <div style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+                            {{ form.text.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">
+                        Оценка:
+                    </label>
+                    {{ form.rating }}
+                    {% if form.rating.errors %}
+                        <div style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+                            {{ form.rating.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Отправить отзыв
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+            <p style="margin: 0;">
+                <a href="/admin/login/?next={{ request.path }}" style="color: #007bff; font-weight: bold;">
+                    Войдите
+                </a>, чтобы оставить отзыв
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}
