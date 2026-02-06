@@ -23,7 +23,8 @@ class Review(models.Model):
     # Связь с пользователем: один пользователь - много отзывов
     author = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='reviews'
     )
     # Текст отзыва
     text = models.TextField(verbose_name='Текст отзыва')
@@ -37,7 +38,7 @@ class Review(models.Model):
     ]
     rating = models.PositiveSmallIntegerField(
         choices=RATING_CHOICES,
-        default=3, 
+        default=3,
         verbose_name='Оценка'
     )
     # Дата создания (автоматически при создании)
@@ -48,3 +49,38 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Отзыв от {self.author} на {self.book.title}"
+
+
+class BookShelf(models.Model):
+    """User's personal book shelf."""
+    SHELF_TYPES = [
+        ('read', 'Прочитано'),
+        ('reading', 'Читаю сейчас'),
+        ('want', 'Хочу прочитать'),
+        ('favorite', 'Избранное'),
+    ]
+
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE,
+        related_name='shelves'
+    )
+    book = models.ForeignKey(
+        Book, 
+        on_delete=models.CASCADE,
+        related_name='on_shelves'
+    )
+    shelf_type = models.CharField(
+        max_length=20, 
+        choices=SHELF_TYPES,
+        default='want'
+    )
+    added_date = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True, max_length=500)
+
+    class Meta:
+        unique_together = ['user', 'book', 'shelf_type']
+        ordering = ['-added_date']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.book.title} ({self.get_shelf_type_display()})"

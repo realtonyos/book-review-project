@@ -1,0 +1,379 @@
+{% extends 'reviews/base.html' %}
+
+{% block title %}Создание аккаунта{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        max-width: 500px;
+        margin: 60px auto;
+        padding: 0 20px;
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid #f0f0f0;
+    }
+    
+    .auth-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+    
+    .auth-logo {
+        font-size: 2.5em;
+        color: #2ecc71;
+        margin-bottom: 15px;
+    }
+    
+    .auth-title {
+        font-size: 1.8em;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+    
+    .auth-subtitle {
+        color: #7f8c8d;
+        font-size: 1em;
+        line-height: 1.5;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-label .required {
+        color: #e74c3c;
+        margin-left: 3px;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: all 0.3s;
+        font-family: inherit;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    .form-input::placeholder {
+        color: #bdc3c7;
+    }
+    
+    .form-help {
+        color: #7f8c8d;
+        font-size: 0.85em;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        line-height: 1.4;
+    }
+    
+    .form-help i {
+        color: #3498db;
+    }
+    
+    .form-errors {
+        color: #e74c3c;
+        font-size: 0.85em;
+        margin-top: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .form-errors i {
+        font-size: 1em;
+    }
+    
+    .password-requirements {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        border-left: 4px solid #3498db;
+    }
+    
+    .requirements-title {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .requirements-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .requirements-list li {
+        color: #7f8c8d;
+        font-size: 0.85em;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .requirements-list li i {
+        color: #2ecc71;
+        font-size: 0.9em;
+    }
+    
+    .btn-submit {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(46, 204, 113, 0.3);
+    }
+    
+    .btn-submit:disabled {
+        background: #bdc3c7;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .auth-footer {
+        text-align: center;
+        margin-top: 35px;
+        padding-top: 25px;
+        border-top: 1px solid #f0f0f0;
+    }
+    
+    .auth-footer-text {
+        color: #7f8c8d;
+        margin-bottom: 20px;
+    }
+    
+    .auth-link {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: color 0.3s;
+    }
+    
+    .auth-link:hover {
+        color: #2980b9;
+        text-decoration: underline;
+    }
+    
+    .password-toggle {
+        position: relative;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #7f8c8d;
+        cursor: pointer;
+        font-size: 1.2em;
+        padding: 5px;
+    }
+    
+    .toggle-password:hover {
+        color: #3498db;
+    }
+    
+    @media (max-width: 480px) {
+        .auth-container {
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+        
+        .auth-card {
+            padding: 30px 25px;
+        }
+        
+        .auth-title {
+            font-size: 1.6em;
+        }
+        
+        .password-requirements {
+            padding: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h1 class="auth-title">Присоединяйтесь к BookReviews</h1>
+            <p class="auth-subtitle">Создайте аккаунт, чтобы сохранять любимые книги, оставлять отзывы и многое другое</p>
+        </div>
+        
+        <form method="post" id="registerForm">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="form-group {% if 'password' in field.name %}password-toggle{% endif %}">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {% if field.name == 'username' %}
+                            <i class="fas fa-user"></i>
+                        {% elif field.name == 'email' %}
+                            <i class="fas fa-envelope"></i>
+                        {% elif 'password' in field.name %}
+                            <i class="fas fa-lock"></i>
+                        {% endif %}
+                        {{ field.label }}
+                        {% if field.field.required %}
+                            <span class="required">*</span>
+                        {% endif %}
+                    </label>
+                    
+                    {% if 'password' in field.name %}
+                        <input type="password" 
+                               name="{{ field.name }}" 
+                               id="{{ field.id_for_label }}"
+                               class="form-input" 
+                               placeholder="{{ field.field.widget.attrs.placeholder|default:field.label }}"
+                               value="{{ field.value|default:'' }}"
+                               {% if field.field.required %}required{% endif %}>
+                        <button type="button" class="toggle-password" onclick="togglePassword('{{ field.id_for_label }}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    {% else %}
+                        <input type="{{ field.field.widget.input_type }}" 
+                               name="{{ field.name }}" 
+                               id="{{ field.id_for_label }}"
+                               class="form-input" 
+                               placeholder="{{ field.field.widget.attrs.placeholder|default:field.label }}"
+                               value="{{ field.value|default:'' }}"
+                               {% if field.field.required %}required{% endif %}
+                               {% if field.name == 'email' %}autocomplete="email"{% endif %}>
+                    {% endif %}
+                    
+                    {% if field.help_text %}
+                        <div class="form-help">
+                            <i class="fas fa-info-circle"></i>
+                            {{ field.help_text }}
+                        </div>
+                    {% endif %}
+                    
+                    {% if field.errors %}
+                        <div class="form-errors">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {{ field.errors|striptags }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div class="password-requirements">
+                <div class="requirements-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Требования к паролю
+                </div>
+                <ul class="requirements-list">
+                    <li><i class="fas fa-check"></i> Не менее 8 символов</li>
+                    <li><i class="fas fa-check"></i> Не должен быть слишком простым</li>
+                    <li><i class="fas fa-check"></i> Не должен состоять только из цифр</li>
+                </ul>
+            </div>
+            
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-user-check"></i>
+                Создать аккаунт
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            <p class="auth-footer-text">
+                Уже есть аккаунт?
+            </p>
+            <a href="{% url 'users:login' %}" class="auth-link">
+                <i class="fas fa-sign-in-alt"></i>
+                Войти в существующий аккаунт
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePassword(fieldId) {
+        const passwordField = document.getElementById(fieldId);
+        const toggleIcon = passwordField.nextElementSibling.querySelector('i');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+    
+    // Валидация паролей в реальном времени
+    document.addEventListener('DOMContentLoaded', function() {
+        const password1 = document.getElementById('{{ form.password1.id_for_label }}');
+        const password2 = document.getElementById('{{ form.password2.id_for_label }}');
+        
+        if (password1 && password2) {
+            function validatePasswords() {
+                if (password1.value !== password2.value && password2.value.length > 0) {
+                    password2.setCustomValidity('Пароли не совпадают');
+                } else {
+                    password2.setCustomValidity('');
+                }
+            }
+            
+            password1.addEventListener('input', validatePasswords);
+            password2.addEventListener('input', validatePasswords);
+        }
+    });
+</script>
+{% endblock %}

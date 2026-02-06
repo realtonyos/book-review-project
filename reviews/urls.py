@@ -8,4 +8,5 @@ app_name = 'reviews'
 urlpatterns = [
     path('', views.home, name='home'),
     path('book/<int:book_id>/', views.book_detail, name='book_detail'),
+    path('book/<int:book_id>/add-shelf/', views.add_to_shelf, name='add_to_shelf'),
 ]

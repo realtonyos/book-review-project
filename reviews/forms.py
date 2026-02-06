@@ -1,5 +1,5 @@
 from django import forms
-from .models import Review
+from .models import Review, BookShelf
 
 
 class ReviewForm(forms.ModelForm):
@@ -11,4 +11,16 @@ class ReviewForm(forms.ModelForm):
                 attrs={'rows': 4, 'placeholder': 'Напишите ваш отзыв...'}
             ),
             'rating': forms.Select(choices=Review.RATING_CHOICES)
+        }
+
+
+class BookShelfForm(forms.ModelForm):
+    class Meta:
+        model = BookShelf
+        fields = ['shelf_type', 'notes']
+        widgets = {
+            'notes': forms.Textarea(attrs={
+                'rows': 3, 
+                'placeholder': 'Ваши заметки о книге...'
+            }),
         }
